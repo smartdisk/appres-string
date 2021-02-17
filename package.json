@@ -1,0 +1,21 @@
+{
+  "name": "@appres/string",
+  "version": "0.0.10",
+  "description": "App Resource String Class",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/smartdisk/appres-string.git"
+  },
+  "homepage": "https://appres.org",
+  "author": "APPRES.ORG",
+  "license": "MIT",
+  "keywords": [
+    "appres",
+    "string"
+  ]
+}
