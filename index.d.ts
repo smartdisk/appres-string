@@ -19,4 +19,8 @@ export declare class AppresString {
 
     static genForAndroid(strings: any, langId: any, isDefault: boolean): string;
     genForAndroid(strings: any, langId: any, isDefault: boolean): string;  
+
+    
+    static format(...args): string;
+    format(...args): string;  
 }

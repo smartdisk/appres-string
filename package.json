@@ -1,6 +1,6 @@
 {
   "name": "@appres/string",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "App Resource String Class",
   "main": "index.js",
   "types": "index.d.ts",
