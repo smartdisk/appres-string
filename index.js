@@ -259,6 +259,13 @@ var AppresString = /** @class */ (function () {
         return genForAndroid(strings, langId, isDefault);
     }
 
+    AppresString.prototype.format = (...args) => { 
+        return args[0].replace(/{(\d+)}/g, 
+            function(match, num) { 
+                num = Number(num) + 1; 
+                return typeof(args[num]) != undefined ? args[num] : match; 
+            }); 
+    }
 
     AppresString.appresString = new AppresString();
     
@@ -283,11 +290,13 @@ var AppresString = /** @class */ (function () {
     AppresString.genForAndroid = function(strings, langId, isDefault) {
         return this.appresString.genForAndroid(strings, langId, isDefault);
     };
+
+    AppresString.format = function(...args) {
+        return this.appresString.format(...args);
+    };
       
     return AppresString;
 }());
   
 module.exports = AppresString;
 module.exports.AppresString = AppresString;
-
-
