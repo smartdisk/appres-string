@@ -1,4 +1,5 @@
 'use strict'
+const md5 = require('md5');
 
 Object.defineProperty(exports, "__esModule", { value: true });
 
@@ -40,7 +41,7 @@ var AppresString = /** @class */ (function () {
         rawstring += "</string>\n";
         return rawstring;
     }
-    function genForJson(strings, langId, key) {
+    function genForJson(strings, langId, key, hash) {
         let result = {};
         strings.forEach(doc => {
             if(doc.payload) {
@@ -48,10 +49,12 @@ var AppresString = /** @class */ (function () {
             }
             if(key!=null && key!="key") {
                 let id = doc.get(key);
+                if(hash=="md5") id = md5(id);
                 let str = langId ? doc.data()[langId] : doc.data();
                 if(str!=null) result[id] = str;
             } else {
                 let id = doc.id;
+                if(hash=="md5") id = md5(id);
                 let str = langId ? doc.data()[langId] : doc.data();
                 if(str!=null) result[id] = str;
             }
@@ -243,8 +246,8 @@ var AppresString = /** @class */ (function () {
     AppresString.prototype.genForXML = (strings, langId) => {
         return genForXML(strings, langId);
     }
-    AppresString.prototype.genForJson = (strings, langId, key) => {
-        return genForJson(strings, langId, key);
+    AppresString.prototype.genForJson = (strings, langId, key, hash) => {
+        return genForJson(strings, langId, key, hash);
     }
     AppresString.prototype.genForKeyValue = (strings, langId) => {
         return genForKeyValue(strings, langId);
@@ -275,8 +278,8 @@ var AppresString = /** @class */ (function () {
     AppresString.genForXML = function(strings, langId) {
         return this.appresString.genForXML(strings, langId);
     };
-    AppresString.genForJson = function(strings, langId, key) {
-        return this.appresString.genForJson(strings, langId, key);
+    AppresString.genForJson = function(strings, langId, key, hash) {
+        return this.appresString.genForJson(strings, langId, key, hash);
     };
     AppresString.genForKeyValue = function(strings, langId) {
         return this.appresString.genForKeyValue(strings, langId);

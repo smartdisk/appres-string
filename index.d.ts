@@ -5,8 +5,8 @@ export declare class AppresString {
     static genForXML(strings: any, langId: any): string;
     genForXML(strings: any, langId: any): string;  
 
-    static genForJson(strings: any, langId: any, key?: any): string;
-    genForJson(strings: any, langId: any, key?: any): string;  
+    static genForJson(strings: any, langId: any, key?: any, hash?: any): string;
+    genForJson(strings: any, langId: any, key?: any, hash?: any): string;  
 
     static genForKeyValue(strings: any, langId: any): string;
     genForKeyValue(strings: any, langId: any): string;  
