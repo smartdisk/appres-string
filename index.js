@@ -1,5 +1,6 @@
 'use strict'
 const md5 = require('md5');
+const sha1 = require('sha1');
 
 Object.defineProperty(exports, "__esModule", { value: true });
 
@@ -9,14 +10,18 @@ var AppresString = /** @class */ (function () {
 
     }
     
-    function genForPlist(strings, langId) {
+    function genForPlist(strings, langId, hash) {
         let rawstring = '/* Localized versions of plist keys */\n';
         rawstring += '/* ' + langId + " */\n";
         strings.forEach(doc => {
             if(doc.payload) {
                 doc = doc.payload.doc;
             }
+
             let id = doc.id;
+            if(hash=="md5") id = md5(id);
+            else if(hash=="sha1") id = sha1(id);
+
             let str = doc.get(langId);
             if(str==null) str = doc.get("default");
             if(str==null) str = "";
@@ -25,14 +30,18 @@ var AppresString = /** @class */ (function () {
         rawstring += "\n";
         return rawstring;
     }
-    function genForXML(strings, langId) {
+    function genForXML(strings, langId, hash) {
         let rawstring = '<?xml version="1.0" encoding="UTF-8"?>\n';
         rawstring += "<string>\n";
         strings.forEach(doc => {
             if(doc.payload) {
                 doc = doc.payload.doc;
             }
+
             let id = doc.id;
+            if(hash=="md5") id = md5(id);
+            else if(hash=="sha1") id = sha1(id);
+
             let str = doc.get(langId);
             if(str==null) str = doc.get("default");
             if(str==null) str = "";
@@ -48,26 +57,34 @@ var AppresString = /** @class */ (function () {
                 doc = doc.payload.doc;
             }
             if(key!=null && key!="key") {
-                let id = doc.get(key);
+                let id = doc.get(key);                
                 if(hash=="md5") id = md5(id);
+                else if(hash=="sha1") id = sha1(id);
+
                 let str = langId ? doc.data()[langId] : doc.data();
                 if(str!=null) result[id] = str;
             } else {
                 let id = doc.id;
                 if(hash=="md5") id = md5(id);
+                else if(hash=="sha1") id = sha1(id);
+
                 let str = langId ? doc.data()[langId] : doc.data();
                 if(str!=null) result[id] = str;
             }
         });
         return result;
     }
-    function genForKeyValue(strings, langId) {
+    function genForKeyValue(strings, langId, hash) {
         let rawstring = "";
         strings.forEach(doc => {
             if(doc.payload) {
                 doc = doc.payload.doc;
             }
+
             let id = doc.id;
+            if(hash=="md5") id = md5(id);
+            else if(hash=="sha1") id = sha1(id);
+
             let str = doc.data()[langId];
             if(str==null) str = doc.data()["default"];
             if(str==null) str = "";          
@@ -75,13 +92,16 @@ var AppresString = /** @class */ (function () {
         });
         return rawstring;
     }
-    function genForDict(strings, langId) {
+    function genForDict(strings, langId, hash) {
         let rawstring = "<dict>\n";
         strings.forEach(doc => {
             if(doc.payload) {
                 doc = doc.payload.doc;
             }
             let id = doc.id;
+            if(hash=="md5") id = md5(id);
+            else if(hash=="sha1") id = sha1(id);
+
             let str = doc.get(langId);
             if(str==null) str = doc.get("default");
             if(str==null) str = "";
@@ -93,7 +113,7 @@ var AppresString = /** @class */ (function () {
     }
     
     
-    function genForApple(strings, langId, isDefault, keyMode) {
+    function genForApple(strings, langId, isDefault, keyMode, hash) {
         /*
         Localizable.strings
         Albumbook
@@ -116,8 +136,9 @@ var AppresString = /** @class */ (function () {
             if(doc.payload) {
                 doc = doc.payload.doc;
             }
-            let id = doc.id;
-    
+
+            let id = doc.id;    
+
             let def = null;
             let str = null;
             let opt = "";
@@ -133,7 +154,7 @@ var AppresString = /** @class */ (function () {
                 id = id.substring(0, pos);
               }
             }
-      
+            
             def = doc.get("default");
             if (def == "" || def == null) {
               def = id;
@@ -157,6 +178,9 @@ var AppresString = /** @class */ (function () {
             if(opt!="") {
               opt = "\t/*" + opt + "*/";
             }
+
+            if(hash=="md5") def = md5(def);
+            else if(hash=="sha1") def = sha1(def);
       
             rawstring += "\"" + def + "\" = \"" + str + "\";"+opt+"\n";
         });
@@ -165,7 +189,7 @@ var AppresString = /** @class */ (function () {
         return rawstring;
     }
     
-    function genForAndroid(strings, langId, isDefault) {
+    function genForAndroid(strings, langId, isDefault, hash) {
         /*
         Android Strings Sample
         <?xml version="1.0" encoding="utf-8"?>
@@ -223,6 +247,10 @@ var AppresString = /** @class */ (function () {
             if (str == "" || str == null) {
                 str = id;
             }
+
+            if(hash=="md5") id = md5(id);
+            else if(hash=="sha1") id = sha1(id);
+
             if(str.startsWith("<string-array>") && str.endsWith("</string-array>")) {
                 let s = str.substring(14, str.length-15);
                 rawstring += "\t<string-array name=\""+id+"\">\n";
@@ -240,26 +268,26 @@ var AppresString = /** @class */ (function () {
     }  
 
         
-    AppresString.prototype.genForPlist = (strings, langId) => {
-        return genForPlist(strings, langId);
+    AppresString.prototype.genForPlist = (strings, langId, hash) => {
+        return genForPlist(strings, langId, hash);
     }
-    AppresString.prototype.genForXML = (strings, langId) => {
-        return genForXML(strings, langId);
+    AppresString.prototype.genForXML = (strings, langId, hash) => {
+        return genForXML(strings, langId, hash);
     }
     AppresString.prototype.genForJson = (strings, langId, key, hash) => {
         return genForJson(strings, langId, key, hash);
     }
-    AppresString.prototype.genForKeyValue = (strings, langId) => {
-        return genForKeyValue(strings, langId);
+    AppresString.prototype.genForKeyValue = (strings, langId, hash) => {
+        return genForKeyValue(strings, langId, hash);
     }
-    AppresString.prototype.genForDict = (strings, langId) => {
-        return genForDict(strings, langId);
+    AppresString.prototype.genForDict = (strings, langId, hash) => {
+        return genForDict(strings, langId, hash);
     }
-    AppresString.prototype.genForApple = (strings, langId, isDefault, keyMode) => {
-        return genForApple(strings, langId, isDefault, keyMode);
+    AppresString.prototype.genForApple = (strings, langId, isDefault, keyMode, hash) => {
+        return genForApple(strings, langId, isDefault, keyMode, hash);
     }
-    AppresString.prototype.genForAndroid = (strings, langId, isDefault) => {
-        return genForAndroid(strings, langId, isDefault);
+    AppresString.prototype.genForAndroid = (strings, langId, isDefault, hash) => {
+        return genForAndroid(strings, langId, isDefault, hash);
     }
 
     AppresString.prototype.format = (...args) => { 
@@ -272,26 +300,26 @@ var AppresString = /** @class */ (function () {
 
     AppresString.appresString = new AppresString();
     
-    AppresString.genForPlist = function(strings, langId) {
-        return this.appresString.genForPlist(strings, langId);
+    AppresString.genForPlist = function(strings, langId, hash) {
+        return this.appresString.genForPlist(strings, langId, hash);
     };
-    AppresString.genForXML = function(strings, langId) {
-        return this.appresString.genForXML(strings, langId);
+    AppresString.genForXML = function(strings, langId, hash) {
+        return this.appresString.genForXML(strings, langId, hash);
     };
     AppresString.genForJson = function(strings, langId, key, hash) {
         return this.appresString.genForJson(strings, langId, key, hash);
     };
-    AppresString.genForKeyValue = function(strings, langId) {
-        return this.appresString.genForKeyValue(strings, langId);
+    AppresString.genForKeyValue = function(strings, langId, hash) {
+        return this.appresString.genForKeyValue(strings, langId, hash);
     };
-    AppresString.genForDict = function(strings, langId) {
-        return this.appresString.genForDict(strings, langId);
+    AppresString.genForDict = function(strings, langId, hash) {
+        return this.appresString.genForDict(strings, langId, hash);
     };
-    AppresString.genForApple = function(strings, langId, isDefault, keyMode) {
-        return this.appresString.genForApple(strings, langId, isDefault, keyMode);
+    AppresString.genForApple = function(strings, langId, isDefault, keyMode, hash) {
+        return this.appresString.genForApple(strings, langId, isDefault, keyMode, hash);
     };
-    AppresString.genForAndroid = function(strings, langId, isDefault) {
-        return this.appresString.genForAndroid(strings, langId, isDefault);
+    AppresString.genForAndroid = function(strings, langId, isDefault, hash) {
+        return this.appresString.genForAndroid(strings, langId, isDefault, hash);
     };
 
     AppresString.format = function(...args) {

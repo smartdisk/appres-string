@@ -1,6 +1,6 @@
 {
   "name": "@appres/string",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "description": "App Resource String Class",
   "main": "index.js",
   "types": "index.d.ts",
@@ -19,6 +19,7 @@
     "string"
   ],
   "dependencies": {
-    "md5": "^2.3.0"
+    "md5": "^2.3.0",
+    "sha1": "^1.1.1"
   }
 }
