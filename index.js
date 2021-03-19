@@ -250,7 +250,7 @@ var AppresString = /** @class */ (function () {
 
             if(hash=="md5") id = md5(id);
             else if(hash=="sha1") id = sha1(id);
-            else id = td.toLowerCase();
+            else id = id.toLowerCase();
 
             if(str.startsWith("<string-array>") && str.endsWith("</string-array>")) {
                 let s = str.substring(14, str.length-15);
