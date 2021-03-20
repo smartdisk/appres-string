@@ -19,13 +19,15 @@ var AppresString = /** @class */ (function () {
             }
 
             let id = doc.id;
-            if(hash=="md5") id = md5(id);
-            else if(hash=="sha1") id = sha1(id);
+            if(id) {
+                if(hash=="md5") id = md5(id);
+                else if(hash=="sha1") id = sha1(id);
 
-            let str = doc.get(langId);
-            if(str==null) str = doc.get("default");
-            if(str==null) str = "";
-            rawstring += id + " = \"" + str + "\";\n";
+                let str = doc.get(langId);
+                if(str==null) str = doc.get("default");
+                if(str==null) str = "";
+                rawstring += id + " = \"" + str + "\";\n";
+            }
         });
         rawstring += "\n";
         return rawstring;
@@ -39,13 +41,15 @@ var AppresString = /** @class */ (function () {
             }
 
             let id = doc.id;
-            if(hash=="md5") id = md5(id);
-            else if(hash=="sha1") id = sha1(id);
+            if(id) {
+                if(hash=="md5") id = md5(id);
+                else if(hash=="sha1") id = sha1(id);
 
-            let str = doc.get(langId);
-            if(str==null) str = doc.get("default");
-            if(str==null) str = "";
-            rawstring += "\t<" + id + ">" + str + "</" + id + ">\n";
+                let str = doc.get(langId);
+                if(str==null) str = doc.get("default");
+                if(str==null) str = "";
+                rawstring += "\t<" + id + ">" + str + "</" + id + ">\n";
+            }
         });
         rawstring += "</string>\n";
         return rawstring;
@@ -58,18 +62,22 @@ var AppresString = /** @class */ (function () {
             }
             if(key!=null && key!="key") {
                 let id = doc.get(key);                
-                if(hash=="md5") id = md5(id);
-                else if(hash=="sha1") id = sha1(id);
+                if(id) {
+                    if(hash=="md5") id = md5(id);
+                    else if(hash=="sha1") id = sha1(id);
 
-                let str = langId ? doc.data()[langId] : doc.data();
-                if(str!=null) result[id] = str;
+                    let str = langId ? doc.data()[langId] : doc.data();
+                    if(str!=null) result[id] = str;    
+                }
             } else {
                 let id = doc.id;
-                if(hash=="md5") id = md5(id);
-                else if(hash=="sha1") id = sha1(id);
-
-                let str = langId ? doc.data()[langId] : doc.data();
-                if(str!=null) result[id] = str;
+                if(id) {
+                    if(hash=="md5") id = md5(id);
+                    else if(hash=="sha1") id = sha1(id);
+    
+                    let str = langId ? doc.data()[langId] : doc.data();
+                    if(str!=null) result[id] = str;    
+                }
             }
         });
         return result;
@@ -80,15 +88,16 @@ var AppresString = /** @class */ (function () {
             if(doc.payload) {
                 doc = doc.payload.doc;
             }
-
             let id = doc.id;
-            if(hash=="md5") id = md5(id);
-            else if(hash=="sha1") id = sha1(id);
+            if(id) {
+                if(hash=="md5") id = md5(id);
+                else if(hash=="sha1") id = sha1(id);
 
-            let str = doc.data()[langId];
-            if(str==null) str = doc.data()["default"];
-            if(str==null) str = "";          
-            rawstring += id + " = \"" + str + "\";\n";      
+                let str = doc.data()[langId];
+                if(str==null) str = doc.data()["default"];
+                if(str==null) str = "";          
+                rawstring += id + " = \"" + str + "\";\n";      
+            }
         });
         return rawstring;
     }
@@ -99,14 +108,16 @@ var AppresString = /** @class */ (function () {
                 doc = doc.payload.doc;
             }
             let id = doc.id;
-            if(hash=="md5") id = md5(id);
-            else if(hash=="sha1") id = sha1(id);
+            if(id) {
+                if(hash=="md5") id = md5(id);
+                else if(hash=="sha1") id = sha1(id);
 
-            let str = doc.get(langId);
-            if(str==null) str = doc.get("default");
-            if(str==null) str = "";
-            rawstring += "\t<key>" + id + "</key>\n";
-            rawstring += "\t<string>" + str + "</string>\n";      
+                let str = doc.get(langId);
+                if(str==null) str = doc.get("default");
+                if(str==null) str = "";
+                rawstring += "\t<key>" + id + "</key>\n";
+                rawstring += "\t<string>" + str + "</string>\n";      
+            }
         });
         rawstring += "</dict>\n";
         return rawstring;
@@ -138,51 +149,52 @@ var AppresString = /** @class */ (function () {
             }
 
             let id = doc.id;    
-
-            let def = null;
-            let str = null;
-            let opt = "";
-      
-            let formatted = "";
-            if(id.endsWith(">")) {
-              let pos = id.lastIndexOf("<");
-              if(pos>0) {
-                formatted = id.substring(pos);
-                if(formatted.indexOf("formatted=false")>0) {
-                  formatted = "<formatted=\"false\">";
+            if(id) {
+                let def = null;
+                let str = null;
+                let opt = "";
+        
+                let formatted = "";
+                if(id.endsWith(">")) {
+                let pos = id.lastIndexOf("<");
+                if(pos>0) {
+                    formatted = id.substring(pos);
+                    if(formatted.indexOf("formatted=false")>0) {
+                    formatted = "<formatted=\"false\">";
+                    }
+                    id = id.substring(0, pos);
                 }
-                id = id.substring(0, pos);
-              }
-            }
-            
-            def = doc.get("default");
-            if (def == "" || def == null) {
-              def = id;
-            }  
-      
-            if(!isDefault) {
-              str = doc.get(langId);
-            }
-            if (str == "" || str == null) {
-              str = def;
-            }
-      
-            if(keyMode || (def.startsWith("<string-array>") && def.endsWith("</string-array>"))) {
-              def = id;
-            } else {
-              opt += "<key=\""+id+"\">";
-            }
-      
-            opt += formatted;
-      
-            if(opt!="") {
-              opt = "\t/*" + opt + "*/";
-            }
+                }
+                
+                def = doc.get("default");
+                if (def == "" || def == null) {
+                def = id;
+                }  
+        
+                if(!isDefault) {
+                str = doc.get(langId);
+                }
+                if (str == "" || str == null) {
+                str = def;
+                }
+        
+                if(keyMode || (def.startsWith("<string-array>") && def.endsWith("</string-array>"))) {
+                def = id;
+                } else {
+                opt += "<key=\""+id+"\">";
+                }
+        
+                opt += formatted;
+        
+                if(opt!="") {
+                opt = "\t/*" + opt + "*/";
+                }
 
-            if(hash=="md5") def = md5(def);
-            else if(hash=="sha1") def = sha1(def);
-      
-            rawstring += "\"" + def + "\" = \"" + str + "\";"+opt+"\n";
+                if(hash=="md5") def = md5(def);
+                else if(hash=="sha1") def = sha1(def);
+        
+                rawstring += "\"" + def + "\" = \"" + str + "\";"+opt+"\n";
+            }
         });
 
         rawstring += "\n";
@@ -225,43 +237,45 @@ var AppresString = /** @class */ (function () {
             }
             let str = null;
             let id = doc.id;
-            let opt = "";
-            if(id.endsWith(">")) {
-                let pos = id.lastIndexOf("<");
-                if(pos>0) {
-                    opt = id.substring(pos);
-                    if(opt.indexOf("formatted=false")>0) {
-                        opt = " formatted=\"false\"";
-                    } else {
-                        opt = "";
+            if(id) {
+                let opt = "";
+                if(id.endsWith(">")) {
+                    let pos = id.lastIndexOf("<");
+                    if(pos>0) {
+                        opt = id.substring(pos);
+                        if(opt.indexOf("formatted=false")>0) {
+                            opt = " formatted=\"false\"";
+                        } else {
+                            opt = "";
+                        }
+                        id = id.substring(0, pos);
                     }
-                    id = id.substring(0, pos);
-                  }
-              }
-            str = doc.get(langId);
-            if(!isDefault) {
+                }
+                str = doc.get(langId);
+                if(!isDefault) {
+                    if (str == "" || str == null) {
+                        str = doc.get("default");
+                    }
+                }
                 if (str == "" || str == null) {
-                    str = doc.get("default");
+                    str = id;
                 }
-            }
-            if (str == "" || str == null) {
-                str = id;
-            }
 
-            if(hash=="md5") id = md5(id);
-            else if(hash=="sha1") id = sha1(id);
-            else id = id.toLowerCase();
+                if(hash=="md5") id = md5(id);
+                else if(hash=="sha1") id = sha1(id);
+                else id = id.toLowerCase();
 
-            if(str.startsWith("<string-array>") && str.endsWith("</string-array>")) {
-                let s = str.substring(14, str.length-15);
-                rawstring += "\t<string-array name=\""+id+"\">\n";
-                let a = s.split(",");
-                for(let as of a) {
-                    rawstring += "\t\t<item>"+as+"</item>\n";
+                if(str.startsWith("<string-array>") && str.endsWith("</string-array>")) {
+                    let s = str.substring(14, str.length-15);
+                    rawstring += "\t<string-array name=\""+id+"\">\n";
+                    let a = s.split(",");
+                    for(let as of a) {
+                        rawstring += "\t\t<item>"+as+"</item>\n";
+                    }
+                    rawstring += "\t</string-array>\n";
+                } else {
+                    rawstring += "\t<string name=\"" + id + "\""+opt+">" + str + "</string>\n";
                 }
-                rawstring += "\t</string-array>\n";
-            } else {
-                rawstring += "\t<string name=\"" + id + "\""+opt+">" + str + "</string>\n";
             }
         });
         rawstring += "</resources>\n";
