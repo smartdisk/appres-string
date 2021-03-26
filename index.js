@@ -9,6 +9,14 @@ var AppresString = /** @class */ (function () {
     function AppresString() {
 
     }
+
+    function split(string, pattern) {
+        if(typeof string !== "string") return [];
+        return string.split(new RegExp((pattern ? pattern : '[ ,]'), 'g')).filter(function(item) {
+            return item !== null && item !== undefined && item !== '';
+        });
+    }
+  
     
     function genForPlist(strings, langId, hash) {
         let rawstring = '/* Localized versions of plist keys */\n';
@@ -313,9 +321,10 @@ var AppresString = /** @class */ (function () {
             }); 
     }
     AppresString.prototype.split = (string, pattern) => {
+        if(typeof string !== "string") return [];
         return string.split(new RegExp((pattern ? pattern : '[ ,]'), 'g')).filter(function(item) {
             return item !== null && item !== undefined && item !== '';
-        });            
+        });
     }
 
     AppresString.appresString = new AppresString();
