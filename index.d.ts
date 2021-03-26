@@ -23,4 +23,7 @@ export declare class AppresString {
     
     static format(...args): string;
     format(...args): string;  
+
+    static split(string, pattern): any;
+    split(string, pattern): any;  
 }

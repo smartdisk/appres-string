@@ -312,6 +312,11 @@ var AppresString = /** @class */ (function () {
                 return typeof(args[num]) != undefined ? args[num] : match; 
             }); 
     }
+    AppresString.prototype.split = (string, pattern) => {
+        return string.split(new RegExp((pattern ? pattern : '[ ,]'), 'g')).filter(function(item) {
+            return item !== null && item !== undefined && item !== '';
+        });            
+    }
 
     AppresString.appresString = new AppresString();
     
@@ -339,6 +344,10 @@ var AppresString = /** @class */ (function () {
 
     AppresString.format = function(...args) {
         return this.appresString.format(...args);
+    };
+
+    AppresString.split = function(string, pattern) {
+        return this.appresString.split(string, pattern);
     };
       
     return AppresString;
