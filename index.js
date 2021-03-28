@@ -1,6 +1,7 @@
 'use strict'
 const md5 = require('md5');
 const sha1 = require('sha1');
+const sum = require('hash-sum');
 
 Object.defineProperty(exports, "__esModule", { value: true });
 
@@ -17,6 +18,18 @@ var AppresString = /** @class */ (function () {
         });
     }
   
+    function hashedkey(hash, key, lwr) {
+        switch(hash) {
+            case "md5":
+                return md5(key);
+            case "sha1":
+                return sha1(key);
+            case "sum":
+                return sum(key);
+        }
+        if(lwr===true) return key.toLowerCase();
+        return key;
+    }
     
     function genForPlist(strings, langId, hash) {
         let rawstring = '/* Localized versions of plist keys */\n';
@@ -28,8 +41,7 @@ var AppresString = /** @class */ (function () {
 
             let id = doc.id;
             if(id) {
-                if(hash=="md5") id = md5(id);
-                else if(hash=="sha1") id = sha1(id);
+                id = hashedkey(hash, id);
 
                 let str = doc.get(langId);
                 if(str==null) str = doc.get("default");
@@ -50,8 +62,7 @@ var AppresString = /** @class */ (function () {
 
             let id = doc.id;
             if(id) {
-                if(hash=="md5") id = md5(id);
-                else if(hash=="sha1") id = sha1(id);
+                id = hashedkey(hash, id);
 
                 let str = doc.get(langId);
                 if(str==null) str = doc.get("default");
@@ -71,8 +82,7 @@ var AppresString = /** @class */ (function () {
             if(key!=null && key!="key") {
                 let id = doc.get(key);                
                 if(id) {
-                    if(hash=="md5") id = md5(id);
-                    else if(hash=="sha1") id = sha1(id);
+                    id = hashedkey(hash, id);
 
                     let str = langId ? doc.data()[langId] : doc.data();
                     if(str!=null) result[id] = str;    
@@ -80,8 +90,7 @@ var AppresString = /** @class */ (function () {
             } else {
                 let id = doc.id;
                 if(id) {
-                    if(hash=="md5") id = md5(id);
-                    else if(hash=="sha1") id = sha1(id);
+                    id = hashedkey(hash, id);
     
                     let str = langId ? doc.data()[langId] : doc.data();
                     if(str!=null) result[id] = str;    
@@ -98,8 +107,7 @@ var AppresString = /** @class */ (function () {
             }
             let id = doc.id;
             if(id) {
-                if(hash=="md5") id = md5(id);
-                else if(hash=="sha1") id = sha1(id);
+                id = hashedkey(hash, id);
 
                 let str = doc.data()[langId];
                 if(str==null) str = doc.data()["default"];
@@ -117,8 +125,7 @@ var AppresString = /** @class */ (function () {
             }
             let id = doc.id;
             if(id) {
-                if(hash=="md5") id = md5(id);
-                else if(hash=="sha1") id = sha1(id);
+                id = hashedkey(hash, id);
 
                 let str = doc.get(langId);
                 if(str==null) str = doc.get("default");
@@ -198,8 +205,7 @@ var AppresString = /** @class */ (function () {
                 opt = "\t/*" + opt + "*/";
                 }
 
-                if(hash=="md5") def = md5(def);
-                else if(hash=="sha1") def = sha1(def);
+                def = hashedkey(hash, def);
         
                 rawstring += "\"" + def + "\" = \"" + str + "\";"+opt+"\n";
             }
@@ -269,9 +275,7 @@ var AppresString = /** @class */ (function () {
                     str = id;
                 }
 
-                if(hash=="md5") id = md5(id);
-                else if(hash=="sha1") id = sha1(id);
-                else id = id.toLowerCase();
+                id = hashedkey(hash, id, true);
 
                 if(str.startsWith("<string-array>") && str.endsWith("</string-array>")) {
                     let s = str.substring(14, str.length-15);
